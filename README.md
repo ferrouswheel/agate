@@ -27,6 +27,25 @@ developing each tool:
   Expected in Random Nucleic Acid Sequences and Found in Genes.  J. theor.
   Biol. 91, 71-98_
 
+# Dependencies
+
+RepeatFinder has been developed in C with a minimal of dependencies.
+It should be compilable on any operating environment that supports
+the standard ANSI C library.
+
+By default the compilation system is setup to support the Make build
+system supported by the GCC compiler
+
+# Compilation
+
+Simply typing make in the source directory should compile three executables:
+
+    agate-repeat-finder, ppt, ppt-mismatch, ppt-se, expected
+
+If you don't have the Make build system you will have to compile and link the
+source code yourself. You may need to check the Makefile environment variables
+to see that they conform to your setup.
+
 # Instructions for use
 
 ## Create a database of matches.
@@ -113,6 +132,10 @@ You can use the index "-1" to indicate that all repeats should be output to
 fasta.
 
 The file created is by default called "repeats.fsa"
+
+# Availability
+
+Code repository on github: https://github.com/ferrouswheel/agate
 
 # The name
 
