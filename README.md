@@ -1,9 +1,39 @@
 agate
 =====
 
-Optimal and non overlapping DNA repeat searcher
+An optimal and non-overlapping DNA repeat searcher.
 
-How to compile: See INSTALL file.
+Include tools for dealing poly-purine/poly-pyrimidine tracts (PPTs).
+
+# What does that mean?
+
+What it means is that `agate` will search of repeats in DNA sequences, but
+unlike most repeat finder tools, it will only return the best matches and any
+sequence segment can only be associated with one reported repeat.
+
+# Why?
+
+There is a bunch of extra work in trying to select the optimal sequence and
+allow for mismatch errors. Most repeat finders show you a whole bunch of
+candidate matches, and sometimes you just want the best. The selection of these
+can in turn impact the selection of neighbouring repeat sequences etc.
+
+For the particular research problem that the software was created
+to address, no overlaps was a condition.
+
+# What research has this been used in?
+
+- **Bagshaw, A., Pitt, J.P.W., Gemmell, N.J.** (2008). High frequency of
+  microsatellites in S. cerevisiae meiotic recombination hotspots. _BMC
+  Genomics_ 9:49 doi:10.1186/1471-2164-9-49
+- **Bagshaw, A., Pitt, J.P.W., Gemmell, N.J.** (2006). Association of
+  poly-purine/poly-pyrimidine sequences with meiotic recombination hot spots.
+  _BMC Genomics_ 7:179, doi:10.1186/1471-2164-7-179
+
+And I've heard it's been used by a few other people in the same lab, although
+perhaps not to a sufficient extent to be referenced.
+
+# The tools
 
 This repo contains source for four executables. They are probably not master
 pieces of software engineering as I wrote them in my free time while doing
