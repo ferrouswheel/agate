@@ -464,6 +464,42 @@ void dumpFasta(FileStructPtr fsp, MatchPtr* matches)
 	}
 }
 
+void print_help(char* prog_name)
+{
+    fprintf(stderr,"Usage: %s <options> <fasta format sequence file name>\n\n", prog_name);
+    fprintf(stderr,"Options:\n");
+    fprintf(stderr,"    -----Database--------------------\n");
+    fprintf(stderr,"\t-d <maxsize>\t- (re)create database, count motifs up to <maxsize>.\n");
+    fprintf(stderr,"\t-e <dist>\t- (used with -d) Allow errors every <dist> nucleotides (default=5)\n");
+    fprintf(stderr,"    -----FASTA export-----------------\n");
+    fprintf(stderr,"\t-fx \t- Output filtered results as a fasta file (results.fsa)\n");
+    fprintf(stderr,"\t-fm \t- (used with -fx) mask repeat, but not mismatches, with N\n");
+    fprintf(stderr,"\t-fa \t- (used with -fx) mask entire repeat, including mismatches, with N\n");
+    fprintf(stderr,"\t-i <indexes>\t- output the match with the index in FASTA form (-1 outputs *all* matches).\n");
+    fprintf(stderr,"\t-is <sequence>\t- The index of the sequence in the original fasta file. \n");
+    fprintf(stderr,"\t-io <file>\t- (used with -i) Filename of fasta file to create.\n");
+    fprintf(stderr,"    -----Hotspots---------------------\n");		
+    fprintf(stderr,"\t-h <file>\t- Sorts output into hotspots defined in <file>.\n");
+    fprintf(stderr,"\t-c <chromosome>\t- specify chromosome number (for hotspots)\n");
+    fprintf(stderr,"    -----Compound repeats-------------\n");
+    fprintf(stderr,"\t-gap \t- Specify compound repeat gap size.\n");
+    fprintf(stderr,"\t-cr \t- Enable compound repeats.\n");
+    fprintf(stderr,"\t-dr \t- Enable degenerative repeats.\n");
+    fprintf(stderr,"    -----Filtering--------------------\n");
+    fprintf(stderr,"\t-f <size>\t- Output the <size> flanking bases to a match (Also can be used with fasta export)\n");
+    fprintf(stderr,"\t-n <number>\t- search for motifs of size <number>.\n");
+    fprintf(stderr,"\t-m <motif>\t- search for a particular motif.\n");
+    fprintf(stderr,"\t-l <lower>\t- find at least <lower> repeats.\n");
+    fprintf(stderr,"\t-u <upper>\t- ignore more than <upper> repeats.\n");
+    fprintf(stderr,"\t-lg <lower>\t- lowest gc%% repeats to find\n");
+    fprintf(stderr,"\t-ug <upper>\t- greatest gc%% repeats to find\n");
+    fprintf(stderr,"\t-lp <lower>\t- lowest purity repeats to find\n");
+    fprintf(stderr,"\t-up <upper>\t- greatest purity repeats to find\n");
+    fprintf(stderr,"\t\t\t (Note: range of purities is constrained by error distance)\n");
+                    
+    exit(1);
+}
+
 
 int parse_args(int argc, char* argv[], FileStructPtr *fsp)
 {
@@ -472,38 +508,7 @@ int parse_args(int argc, char* argv[], FileStructPtr *fsp)
 	
 	if (argc < 2)
 	{
-		fprintf(stderr,"Usage: %s <options> <fasta format sequence file name>\n\n", argv[0]);
-		fprintf(stderr,"Options:\n");
-		fprintf(stderr,"    -----Database--------------------\n");
-		fprintf(stderr,"\t-d <maxsize>\t- (re)create database, count motifs up to <maxsize>.\n");
-		fprintf(stderr,"\t-e <dist>\t- (used with -d) Allow errors every <dist> nucleotides (default=5)\n");
-		fprintf(stderr,"    -----FASTA export-----------------\n");
-		fprintf(stderr,"\t-fx \t- Output filtered results as a fasta file (results.fsa)\n");
-		fprintf(stderr,"\t-fm \t- (used with -fx) mask repeat, but not mismatches, with N\n");
-		fprintf(stderr,"\t-fa \t- (used with -fx) mask entire repeat, including mismatches, with N\n");
-		fprintf(stderr,"\t-i <indexes>\t- output the match with the index in FASTA form (-1 outputs *all* matches).\n");
-		fprintf(stderr,"\t-is <sequence>\t- The index of the sequence in the original fasta file. \n");
-		fprintf(stderr,"\t-io <file>\t- (used with -i) Filename of fasta file to create.\n");
-		fprintf(stderr,"    -----Hotspots---------------------\n");		
-		fprintf(stderr,"\t-h <file>\t- Sorts output into hotspots defined in <file>.\n");
-		fprintf(stderr,"\t-c <chromosome>\t- specify chromosome number (for hotspots)\n");
-		fprintf(stderr,"    -----Compound repeats-------------\n");
-		fprintf(stderr,"\t-gap \t- Specify compound repeat gap size.\n");
-		fprintf(stderr,"\t-cr \t- Enable compound repeats.\n");
-		fprintf(stderr,"\t-dr \t- Enable degenerative repeats.\n");
-		fprintf(stderr,"    -----Filtering--------------------\n");
-		fprintf(stderr,"\t-f <size>\t- Output the <size> flanking bases to a match (Also can be used with fasta export)\n");
-		fprintf(stderr,"\t-n <number>\t- search for motifs of size <number>.\n");
-		fprintf(stderr,"\t-m <motif>\t- search for a particular motif.\n");
-		fprintf(stderr,"\t-l <lower>\t- find at least <lower> repeats.\n");
-		fprintf(stderr,"\t-u <upper>\t- ignore more than <upper> repeats.\n");
-		fprintf(stderr,"\t-lg <lower>\t- lowest gc%% repeats to find\n");
-		fprintf(stderr,"\t-ug <upper>\t- greatest gc%% repeats to find\n");
-		fprintf(stderr,"\t-lp <lower>\t- lowest purity repeats to find\n");
-		fprintf(stderr,"\t-up <upper>\t- greatest purity repeats to find\n");
-		fprintf(stderr,"\t\t\t (Note: range of purities is constrained by error distance)\n");
-						
-		exit(1);
+        print_help(argv[0]);
 	}
 	
 	/* parse arguments */
@@ -653,6 +658,10 @@ int parse_args(int argc, char* argv[], FileStructPtr *fsp)
 			else if(strcmp(argv[i], "-fm") == 0) {
 				fasta_mask = True;
 			}
+            else {
+                fprintf(stderr,"Error: Unknown option %s\n", argv[i]);
+                print_help(argv[0]);
+            }
 			
 		}
 		else { // Fasta filename:
