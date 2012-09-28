@@ -17,7 +17,7 @@ repeat-finder: fasta.o common.o hotspot.o motif.o match.o database.o repeat-find
 ppt-mismatch: fasta.o common.o ppt-mismatch.o hotspot.o
 
 expected: expected.c
-	${CC} ${CFLAGS} -lm -o expected expected.c
+	${CC} ${CFLAGS} expected.c -lm -o expected
 
 match.o: match.c match.h fasta.h
 
