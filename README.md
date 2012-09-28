@@ -1,17 +1,16 @@
-agate
-=====
+# Agate
 
-An optimal and non-overlapping DNA repeat searcher.
+**An optimal and non-overlapping DNA repeat searcher.**
 
-Include tools for dealing poly-purine/poly-pyrimidine tracts (PPTs).
+Includes tools for dealing poly-purine/poly-pyrimidine tracts (PPTs).
 
-# What does that mean?
+## What does that mean?
 
 What it means is that `agate` will search of repeats in DNA sequences, but
 unlike most repeat finder tools, it will only return the best matches and any
 sequence segment can only be associated with one reported repeat.
 
-# Why?
+## Why?
 
 There is a bunch of extra work in trying to select the optimal sequence and
 allow for mismatch errors. Most repeat finders show you a whole bunch of
@@ -21,19 +20,7 @@ can in turn impact the selection of neighbouring repeat sequences etc.
 For the particular research problem that the software was created
 to address, no overlaps was a condition.
 
-# What research has this been used in?
-
-- **Bagshaw, A., Pitt, J.P.W., Gemmell, N.J.** (2008). High frequency of
-  microsatellites in S. cerevisiae meiotic recombination hotspots. _BMC
-  Genomics_ 9:49 doi:10.1186/1471-2164-9-49
-- **Bagshaw, A., Pitt, J.P.W., Gemmell, N.J.** (2006). Association of
-  poly-purine/poly-pyrimidine sequences with meiotic recombination hot spots.
-  _BMC Genomics_ 7:179, doi:10.1186/1471-2164-7-179
-
-And I've heard it's been used by a few other people in the same lab, although
-perhaps not to a sufficient extent to be referenced.
-
-# The tools
+## The tools
 
 This repo contains source for four executables. They are probably not master
 pieces of software engineering as I wrote them in my free time while doing
@@ -57,7 +44,7 @@ developing each tool:
   Expected in Random Nucleic Acid Sequences and Found in Genes.  J. theor.
   Biol. 91, 71-98_
 
-# Dependencies
+## Dependencies
 
 RepeatFinder has been developed in C with a minimal of dependencies.
 It should be compilable on any operating environment that supports
@@ -66,7 +53,7 @@ the standard ANSI C library.
 By default the compilation system is setup to support the Make build
 system supported by the GCC compiler
 
-# Compilation
+## Compilation
 
 Simply typing make in the source directory should compile three executables:
 
@@ -76,9 +63,9 @@ If you don't have the Make build system you will have to compile and link the
 source code yourself. You may need to check the Makefile environment variables
 to see that they conform to your setup.
 
-# Instructions for use
+## Instructions for use
 
-## Create a database of matches.
+### Create a database of matches.
 
 This is done with the "-d" option followed by a number indicating the maximum
 size of motifs to look for. e.g.
@@ -97,7 +84,7 @@ The database file *must* be the same as the sequence filename with ".database"
 appended. So if you rename the sequence file, you must rename the database file
 or regenerate it.
 
-### Changing the error distance.
+#### Changing the error distance.
 
 By default databases are created with a minimum error distance of 5.  If you
 wish to alter this you can also specify an error distance when you create
@@ -107,7 +94,7 @@ a database using the "-e" option. e.g.
 
 Sets the minimum error distance to be 7 nucleotides.
 
-## Normal matching
+### Normal matching
 
 Specify what matches you are interested in using the following:
 
@@ -133,7 +120,7 @@ e.g "-m ATT". You can also use this more than once.
 Results are output to the file "results.csv". Be warned that this is
 overwritten if it already exists so rename results you wish to keep.
 
-## Compound Repeats
+### Compound Repeats
 
 Use "-cr" to look for compound repeats, and "-gap" to specify the maximum gap
 between repeats. If you only are interested in degenerate repeats then use
@@ -151,7 +138,7 @@ Results are output to the file "results.csv". The compound matches are reported
 at the end, and also has a column to indicate the the indexes of the sub
 repeats.
 
-## Extracting to FASTA
+### Extracting to FASTA
 
 To output to a fasta file use "-i" option along with the index of the match. If
 the index is of a compound repeat you must also specify either -cr or -dr
@@ -163,11 +150,23 @@ fasta.
 
 The file created is by default called "repeats.fsa"
 
-# Availability
+## What research has this been used in?
+
+- **Bagshaw, A., Pitt, J.P.W., Gemmell, N.J.** (2008). High frequency of
+  microsatellites in S. cerevisiae meiotic recombination hotspots. _BMC
+  Genomics_ 9:49 doi:10.1186/1471-2164-9-49
+- **Bagshaw, A., Pitt, J.P.W., Gemmell, N.J.** (2006). Association of
+  poly-purine/poly-pyrimidine sequences with meiotic recombination hot spots.
+  _BMC Genomics_ 7:179, doi:10.1186/1471-2164-7-179
+
+And I've heard it's been used by a few other people in the same lab, although
+perhaps not to a sufficient extent to be referenced.
+
+## Availability
 
 Code repository on github: https://github.com/ferrouswheel/agate
 
-# The name
+## The name
 
 NOTE: This project used to be called repeatfinder and be [hosted on
 sourceforge](http://repeatfinder.sf.net), but then they broke the drupal website
