@@ -1,0 +1,60 @@
+                   INSTALL RepeatFinder from source code
+
+Table of contents
+PREREQUISITES
+(A) SOURCE CODE DISTRIBUTION
+(B) COMPILATION
+(C) RUNNING REPEATFINDER
+(F) UPDATE OF SOURCE CODE (SVN or SVN snapshot only)
+
+PREREQUISITES
+
+RepeatFinder has been developed in C with a minimal of dependencies.
+It should be compilable on any operating environment that supports
+the standard ANSI C library.
+
+By default the compilation system is setup to support the Make build
+system supported by the GCC compiler
+
+(A) SOURCE CODE DISTRIBUTION
+
+RepeatFinder source code is currently distributed in 2 forms:
+
+1) Officially released source code (e.g. repeatfinder-1.0.0.tar.gz or later)
+
+  The Full source code version contains all the RepeatFinder source code
+  required for compilation. It is distributed as one file (*.tar.gz
+  package) and the version is composed of 3 numbers, e.g. 1.0.0
+
+2) SVN or SVN Snapshots of source code (SVN or SVN snapshot)
+
+  This version of the source code can be acquired either from the SVN
+  repository (https://svn.sourceforge.net/svnroot/repeatfinder) or as a snapshot
+  (*.tar.gz package) of that SVN repository. The SVN snapshot name
+  contains the date when the snapshot was created (checked out from
+  the SVN repository), e.g. repeatfinder_svn_snapshot_2005_03_19.tar.gz
+
+
+(B) COMPILATION
+
+Simply typing make in the source directory should compile three executables:
+repeat-finder, ppt-mismatch, and expected
+
+If you don't have the Make build system you will have to compile and link the
+source code yourself. You may need to check the Makefile environment variables
+to see that they conform to your setup.
+
+(C) RUNNING REPEATFINDER
+
+See README for information about running the RepeatFinder tools.
+
+(D) UPDATE OF SOURCE CODE (SVN or SVN snapshot only)
+
+If you want to update your current source from
+SVN, you have to perform a few steps:
+
+    cd /location/of/repeatfinder-sourcecode/
+    cvs update -dP
+    ./configure ...
+    make
+    make install

@@ -1,0 +1,139 @@
+\documentclass[a4paper]{article}
+
+\title{An exclusive and optimal matching approximate tandem repeat finder}
+
+\author{Joel Pitt and Andrew Bagshaw and Neil Gemmel}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present a highly customisable tool for locating tandem repeats. Simple named RepeatFinder, it can search for both Exact Tandem Repeats (ETRs) and Approximate Tandem Repeats (ATR) and can discover many overlapping repeats. RepeatFinder will iteratively select optimal repeats and prune any overlaps until all sequence locations are associated with at most one repeat. RepeatFinder is aimed at microsatellites (max. 6 b.p. motif length) but can include longer user specified motifs too.
+\end{abstract}
+
+Tandem repeats are classified according to the length of the repeated motif into micro- (below 6 bp), minisatellites (from 7 to 100 bp) and satellites (100+ bp). 
+
+RepeatMasker program (http://repeatmasker.genome.washington.edu)
+
+Snippets from \cite{Delgrange04}:
+\begin{itemize}
+\item An Exact Tandem Repeat (ETR) comes from the tandem duplication of the motif and an ATR derives from an ETR by a series of point mutations
+
+\item three classes of program aimed at locating tandam repeats:
+\begin{itemize}
+\item several fast algorithms searching only two duplications or exact tandem repeats (among others see Main and Lorentz, 1984; Kolpakov and Kucherov, 1999; Stoye and Gusfield, 2002)
+
+\item Searching for ATR where motif copies may differ from each other only by substitutions (Kolpakov and Kucherov, 2001; Landau et al., 2001)
+
+\item Algorithms that locate ATR and authorize substitutions and indels. Tandem Repeat Finder (Benson, 1999) first searches for significant exact repetitions in the sequence. It then uses these repetitions as anchors and checks if the alignment of the region with an ETR scores above a userdefined threshold
+\end{itemize}
+
+\item STAR uses Minimum Description Length to provide an absolute measure of the significance of an ATR independently of the motif. STAR is based around compression of sequence when it contains significant ATR of a motif.
+
+\end{itemize}
+
+By exclusive and optimal matching we mean that no matches overlap one another and that the match that best describes a region is found.
+
+TODO: advantage behind non-overlapping matches?
+
+\section{Algorithm}
+
+The program initially constructs a database of matches based on the matching algorithm below. Once this database is constructed the program can report repeats within specific length bounds, for certain motifs, or all repeats in the database.
+
+\paragraph{Motif creation}
+
+The program requires the user to specify the possible motifs that will be used to match to the sequence. This can be specified as either a motif length, k, so all valid motifs of length $k$ are considered, or as specific motifs of interest. When motifs of a particular length are considered, the program ignores those that are complete duplications of shorter motifs. E.g. \texttt{AA} is not a valid motif of length 2 because it is a duplication of the length 1 motif \texttt{A}. Unlike Lyndon motifs \cite{Delgrange04}, RepeatFinder includes motifs that are a rotation of one another (e.g. tac, cta, act). The exclusion of motifs containing repeating elements can be overidden by explicitly specifying the motif.
+
+\paragraph{Exact matching}
+
+Initially, exact matching is used to find runs of repeating motifs, with a minimum of 2 repeats required for a match to be stored, or 3 in the case of single nucleotide motifs (TODO: reasoning behind different minimums?). This provides a set of locations to initiate matching with an allowance for mismatches which is similar to how Tandem Repeat Finder works \cite{Benson99}.
+
+\paragraph{Match extension allowing mismatches}
+
+The program will then attempt to extend exact matches one base at a time. Allowing mismatches every $e$ bases, where $e$ is a user specified variable.
+
+The program allows for substitutions, insertions and deletions. At each occurrence of a sequence base that doesn't match the base at the current position in the motif, the program checks that a mismatch has not occured within the last $e$ bases matched to the motif, and then recursively tries to consider the mismatch as a deletion, insertion, or substitution, but only keeps the mismatch that gives the longest run. An additional constraint is placed on matches by preventing mismatches from occuring in the terminal 2 nucleotides. Terminal mismatches are not significant enough to warrant preserving them and could also shorten pure neighbouring repeats in the truncating stage. This constraint is applied to mismatches before deciding which mismatch gave the longest run. A situation requiring repeated trimming could occur with $e = 2$. 
+
+On the occasion that more that one set of mismatch types give a match of the same length, a preference is given to mismatches in the order: deletion, insertion, substitutions. An exception is the case of single base motifs (\texttt{A}, \texttt{T}, \texttt{C}, and \texttt{G}) where all mismatches are considered substitutions.
+
+\paragraph{Optimal selection of matches}
+
+The process of match extension allows matches to overlap and often neighbouring exact matches will extend to cover the same region of a sequence (TODO: fig). To make the sequence have an exclusive mapping between each base in the sequence and each match, the overlapping matches are truncated. Each match is processed in turn, checking for overlaps with its neighbours and truncating them if necessary. Truncation first involves shortening the match so that it no longer overlaps, and then continuing until there are no terminal mismatches in a similar way to trimming matches after they have been extended.
+
+Matches that are truncated to less than the minimum number of repeats for exact matching (3 for single base motifs and 2 for two bases and greater motifs) are discarded. If the two overlapping matches have motifs of the same length and overlap by at least two times that motif length, then the truncated match has its motif added to the secondary motifs of the match currently being processed (TODO: fig). This allows repeats with different rotations of a motif to be recorded as the same motif if necessary.
+
+The order in which matches are truncated has a large impact on the final output, thus the matches are first prioritised by length, purity, motif length, and match start position. Matches of greatest length are given highest priority, in the case of equal length repeats then those with higher purity are given priority. Similarly, if purity is then also equal, priority is given to the match with the smallest motif size, followed by the match appearing earliest in the sequence. Everytime a match is truncated its priority may change, thus everytime truncation occurs the match's priority must be recalculated.
+
+\subsection{Extracting matches of interest}
+
+The user can extract particular matches from the database once it has been created. They can be sure that no other motif better describes each region with the parameters given when creating the database. As when creating the database, motifs specifying which matches to extract may be given explicitly, or the size of these motifs can be used.
+
+Other properties can be used for determining which matches to extract such as purity and repeat count.
+
+\paragraph{Finding Compound repeats}
+
+Compound repeats are neighbouring matches with the same motif that have an intervening sequence of nucleotides between them and may have once been a joint match before being split by an insertion of more than one nucleotide - possibly due to a transposable element. Degenerative repeats are similar in that they also have an intervening length of sequence, but don't have the same primary motif. Degenerative repeats must instead match the secondary motifs that arise when neighbouring sequences overlap (see ``Optimal selection of matches'', above).
+
+If compound or degenerative matches are specified by the user then these are now constructed using only matches that have motifs that will be extracted. Matches are merged into compound or degenerative repeats if their terminals are within $g$ nucleotides of one another, where $g$ is user specified gap size.
+
+\section{Implementation}
+
+written in portable C, reads fasta imput
+
+\section{Results}
+
+\subsection{Execution time}
+
+compared execution time of each program. Also try and compare algorithmic time - although this could be difficult.
+
+\subsection{Output Comparison}
+
+Compared output of sputnik and tandem repeat finder etc to
+
+\section{Acknowledgements}
+
+The program was initially based on Sputnik but has since been rewritten. Ideas on 
+
+
+\end{document}
+
+
+trf \cite{Benson99}
+sputnik \footnote{http://espressosoftware.com/pages/sputnik.jsp}
+
+also worried about claim in Benson paper about treating indels and substituions the same being bad. 
+
+``As the two methods differ, TRF and STAR may not detect
+an ATR exactly with the same begin and end positions in the
+sequence. When computing the intersection of their results,
+we distinguish between ATR of TRF that 1/exactly matches,
+2/is strictly included in, 3/is overlapped over more than 80,
+4/more than 50 or 5/ < 50%of its length by an ATR of STAR.
+The following table summarizes the average results over all
+chromosomes for the cost M = 2, S = 7, D = 7 and various
+threshold values. In left to right order, the columns give: the
+threshold value (Min Score), the number of ATR for TRF
+and STAR (num TRF and num STAR), five percentages of ATR
+found by TRF and STAR in different categories relatively to
+TRFs total (P1and P2for categories 1/and 2/, C3, C4, C5
+respectively for the cumulated percentage of all categories up
+to 3, to 4 and to 5), and finally the percentage of ATR found
+by TRF among STARs ATR.'' \cite{Delgrange04}
+
+Compression gain to measure significance of ATR?
+
+``Redundancy - For a given imperfect ATR one can find several putative motifs
+whose exact repetition align well with the ATR (on sometimes
+slightly different regions). Each one is a possible view
+or explanation of this ATR (see Landau et al., 2001 for a discussion
+on good definitions of ATR). This means it is difficult
+to exactly find the boundaries of an ATR and the correct and
+unique motif'' \cite{Delgrange04}
+
+...
+
+``detected by looking for overlaps of ATR
+of different motifs. These types of complex microsatellites
+correspond to both Variable Length or Multi-Periodic Tandem
+Repeats as defined in Hauth and Joseph (2002) which
+presents an interesting attempt to handle redundancy.''

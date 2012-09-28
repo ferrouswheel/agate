@@ -1,0 +1,6 @@
+Repeat-Finder 1.0 Author List
+=========================
+
+The original source code was based on the GPLed Sputnik. However, limitations in that code lead to the entire system being rewritten to handle arbitary length fasta files with other numerous extensions. The "expected" program is still based on the original framework however, and some elements of Sputnik may still exist in ppt-mismatch.
+
+All original coding has been done by Joel Pitt (joel.pitt@gmail.com) with project direction guided primarily by Andrew Bagshaw at Canterbury University. Neil Gemmell of the Canterbury University Genetics lab arranged funding for Joel to spend focussed time on developing Repeat-Finder, although Joel has spent significantly more time working on Repeat-Finder outside of the arranged funding.
